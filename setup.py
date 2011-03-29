@@ -25,7 +25,7 @@ setup(
 	entry_points=\
 	"""
         [ckan.plugins]
-	datagm=ckanext.exampletheme:ExampleThemePlugin
+	exampletheme=ckanext.exampletheme:ExampleThemePlugin
 
         [ckan.forms]
         example_form = ckanext.exampletheme.package_form:get_example_fieldset
