@@ -66,7 +66,7 @@ class ExampleThemePlugin(SingletonPlugin):
         found in the custom ``home/index.html`` template provided as
         part of the package).
         """
-        stream = stream | Transformer('p[@id="examplething"]')\
+        stream = stream | Transformer('//p[@id="examplething"]/text()')\
                  .substitute(r'frob', r'foobar')
         return stream
 
