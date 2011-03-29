@@ -1,0 +1,32 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/" 
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:doap="http://usefulinc.com/ns/doap"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  py:strip=""
+  >
+
+<!-- ! a custom primary nav -->
+  <py:match path="//div[@class='menu']">
+    <div class="menu">
+      <ul>
+        <li>${h.nav_link(c, _('Home'), controller='home', action='index', id=None)}
+      </li>
+      <li>${h.nav_link(c, _('Data'), controller='package', action='index', id=None)}
+      </li>
+    </ul>
+    </div>
+  </py:match>
+
+<!-- make a really big search box in the top bar -->
+  <py:match path="//div[@id='top-bar']/div[@class='search-form']">
+    <div class="search-form">
+        <form action="${url(controller='package', action='search')}" method="GET">
+          <input type="search" class="search" name="q" value="" autocomplete="off" results="5" placeholder="What are you looking for?"  id="bigsearch"  />
+	  <input type="submit" class="searchbutton" value="search" />
+        </form>
+    </div>
+  </py:match>
+  
+  <xi:include href="layout_base.html" />
+</html>
