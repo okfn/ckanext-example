@@ -2,7 +2,7 @@ This CKAN Extension demonstrates some common patterns for customising a CKAN ins
 
 It comprises:
 
-   * A CKAN Extension "plugin" at ``ckanext/exampletheme/__init__.py``
+   * A CKAN Extension "plugin" at ``ckanext/exampletheme/plugin.py``
      which, when loaded, overrides various settings in the core
      ``ini``-file to provide:
 
@@ -21,7 +21,7 @@ Installation
 
 To install this package, from your CKAN virtualenv, run the following from your CKAN base folder (e.g. ``pyenv/``)::
 
- pip install -e hg+https://bitbucket.org/okfn/ckanext-exampletheme#egg=ckanext-exampletheme
+  pip install -e hg+https://bitbucket.org/okfn/ckanext-exampletheme#egg=ckanext-exampletheme
 
 Then activate it by setting ``ckan.plugins = exampletheme`` in your main ``ini``-file.
 
@@ -29,7 +29,7 @@ Then activate it by setting ``ckan.plugins = exampletheme`` in your main ``ini``
 Orientation
 ===========
 
-* Examine the source code, starting with ``ckanext/exampletheme/__init__.py``
+* Examine the source code, starting with ``ckanext/exampletheme/plugin.py``
 
 * To understand the nuts and bolts of this file, which is a CKAN
   *Extension*, read in conjunction with the "Extension
