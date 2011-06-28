@@ -87,4 +87,6 @@ class ExampleThemePlugin(SingletonPlugin):
                     '/user/register',
                     controller='ckanext.exampletheme.controller:CustomUserController',
                     action='custom_register')
+        map.connect('/package/new', controller='package_formalchemy', action='new')
+        map.connect('/package/edit/{id}', controller='package_formalchemy', action='edit')
         return map

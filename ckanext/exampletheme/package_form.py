@@ -22,7 +22,7 @@ def build_example_form(is_admin=False,
 
     # Layout
     field_groups = OrderedDict([
-        (_('Basic information'), ['title', 'name', 'url',
+        (_('Customised Basic information'), ['title', 'name', 'url',
                                   'notes', 'tags']),
         (_('Details'), ['author', 'author_email', 'groups',
                         'maintainer', 'maintainer_email',
