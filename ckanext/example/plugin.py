@@ -11,7 +11,7 @@ from ckan.plugins import IRoutes
 log = getLogger(__name__)
 
 
-class ExampleThemePlugin(SingletonPlugin):
+class ExamplePlugin(SingletonPlugin):
     """This plugin demonstrates how a theme packaged as a CKAN
     extension might extend CKAN behaviour.
 
@@ -45,9 +45,9 @@ class ExampleThemePlugin(SingletonPlugin):
         here = os.path.dirname(__file__)
         rootdir = os.path.dirname(os.path.dirname(here))
         our_public_dir = os.path.join(rootdir, 'ckanext',
-                                      'exampletheme', 'theme', 'public')
+                                      'example', 'theme', 'public')
         template_dir = os.path.join(rootdir, 'ckanext',
-                                    'exampletheme', 'theme',
+                                    'example', 'theme',
         'templates')
         # set our local template and resource overrides
         config['extra_public_paths'] = ','.join([our_public_dir,
@@ -85,7 +85,7 @@ class ExampleThemePlugin(SingletonPlugin):
         #    h.url_for('register')
         map.connect('register',
                     '/user/register',
-                    controller='ckanext.exampletheme.controller:CustomUserController',
+                    controller='ckanext.example.controller:CustomUserController',
                     action='custom_register')
         map.connect('/package/new', controller='package_formalchemy', action='new')
         map.connect('/package/edit/{id}', controller='package_formalchemy', action='edit')

@@ -2,7 +2,7 @@ This CKAN Extension demonstrates some common patterns for customising a CKAN ins
 
 It comprises:
 
-   * A CKAN Extension "plugin" at ``ckanext/exampletheme/plugin.py``
+   * A CKAN Extension "plugin" at ``ckanext/example/plugin.py``
      which, when loaded, overrides various settings in the core
      ``ini``-file to provide:
 
@@ -21,15 +21,15 @@ Installation
 
 To install this package, from your CKAN virtualenv, run the following from your CKAN base folder (e.g. ``pyenv/``)::
 
-  pip install -e hg+https://bitbucket.org/okfn/ckanext-exampletheme#egg=ckanext-exampletheme
+  pip install -e git+https://github.com/okfn/ckanext-example#egg=ckanext-example
 
-Then activate it by setting ``ckan.plugins = exampletheme`` in your main ``ini``-file.
+Then activate it by setting ``ckan.plugins = example`` in your main ``ini``-file.
 
 
 Orientation
 ===========
 
-* Examine the source code, starting with ``ckanext/exampletheme/plugin.py``
+* Examine the source code, starting with ``ckanext/example/plugin.py``
 
 * To understand the nuts and bolts of this file, which is a CKAN
   *Extension*, read in conjunction with the "Extension
@@ -41,7 +41,7 @@ Orientation
   here":http://packages.python.org/ckan/configuration.html#extra-template-paths
 
 * These are set to point at directories within
-  `ckanext/exampletheme/theme/`` (in this package).  Here, we override
+  `ckanext/example/theme/`` (in this package).  Here, we override
   the home page, provide some extra style with an ``extra.css``, and
   customise the navigation and header of the main template in the file ``layout.html``.
 

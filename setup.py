@@ -4,9 +4,9 @@ import sys, os
 version = '0.1'
 
 setup(
-	name='ckanext-exampletheme',
+	name='ckanext-example',
 	version=version,
-	description="Example themeb for customising CKAN",
+	description="Example extension for customising CKAN",
 	long_description="""\
 	""",
 	classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -16,7 +16,7 @@ setup(
 	url='',
 	license='',
 	packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-	namespace_packages=['ckanext', 'ckanext.exampletheme'],
+	namespace_packages=['ckanext', 'ckanext.example'],
 	include_package_data=True,
 	zip_safe=False,
 	install_requires=[
@@ -25,9 +25,9 @@ setup(
 	entry_points=\
 	"""
         [ckan.plugins]
-	exampletheme=ckanext.exampletheme.plugin:ExampleThemePlugin
+	example=ckanext.example.plugin:ExamplePlugin
 
         [ckan.forms]
-        example_form = ckanext.exampletheme.package_form:get_example_fieldset
+        example_form = ckanext.example.package_form:get_example_fieldset
 	""",
 )
