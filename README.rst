@@ -13,6 +13,8 @@ It comprises:
 
 * A custom Package edit form
 
+* A custom User registration and edition form
+
 * Some simple template customisations
 
 Installation
@@ -50,9 +52,4 @@ Orientation
   documentation":http://genshi.edgewall.org/wiki/GenshiTutorial#AddingaLayoutTemplate.
   This allows you to use Xpath selectors to override snippets of HTML
   globally.
-
-* The custom package edit form at ``package_form.py`` follows a deprecated
-  way to make a form (using FormAlchemy). This part of the Example Theme needs
-  updating. In the meantime, follow the instructions at: 
-  http://readthedocs.org/docs/ckan/en/latest/forms.html
 
