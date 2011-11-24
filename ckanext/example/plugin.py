@@ -54,8 +54,11 @@ class ExamplePlugin(SingletonPlugin):
                 config.get('extra_public_paths', '')])
         config['extra_template_paths'] = ','.join([template_dir,
                 config.get('extra_template_paths', '')])
+        # add in the extra.css
+        config['ckan.template_head_end'] = config.get('ckan.template_head_end', '') +\
+                                           '<link rel="stylesheet" href="/css/extra.css" type="text/css"> '
         # set the title
-        config['ckan.site_title'] = "An example CKAN theme"
+        config['ckan.site_title'] = "Example CKAN theme"
         # set the customised package form (see ``setup.py`` for entry point)
         config['package_form'] = "example_form"
 

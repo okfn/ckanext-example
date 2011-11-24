@@ -9,12 +9,9 @@
 <!-- ! a custom primary nav -->
   <py:match path="//div[@class='menu']">
     <div class="menu">
-      <ul>
-        <li>${h.nav_link(c, _('Home'), controller='home', action='index', id=None)}
-      </li>
-      <li>${h.nav_link(c, _('Data'), controller='package', action='index', id=None)}
-      </li>
-    </ul>
+        ${h.nav_link(c, _('Home'), controller='home', action='index', id=None)}
+        ${h.nav_link(c, _('Data'), controller='package', action='index', id=None)}
+        ${h.nav_link(c, _('New dataset'), controller='package', action='new', id=None)}
     </div>
   </py:match>
 

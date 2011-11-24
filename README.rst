@@ -32,17 +32,18 @@ Orientation
 
 * To understand the nuts and bolts of this file, which is a CKAN
   *Extension*, read in conjunction with the "Extension
-  documentation":http://packages.python.org/ckan/plugins.html
+  documentation": http://docs.ckan.org/en/latest/plugins.html
 
 * One thing the extension does is set the values of
   ``extra_public_paths`` and ``extra_template_paths`` in the CKAN
   config, which are "documented
-  here":http://packages.python.org/ckan/configuration.html#extra-template-paths
+  here": http://docs.ckan.org/en/latest/configuration.html#extra-template-paths
 
 * These are set to point at directories within
-  `ckanext/example/theme/`` (in this package).  Here, we override
-  the home page, provide some extra style with an ``extra.css``, and
-  customise the navigation and header of the main template in the file ``layout.html``.
+  ``ckanext/example/theme/`` (in this package).  Here we:
+   * override the home page HTML ``ckanext/example/theme/templates/home/index.html``
+   * provide some extra style by serving ``extra.css`` (which is loaded using the ``ckan.template_head_end`` option
+   * customise the navigation and header of the main template in the file ``layout.html``.
 
   The latter file is a great place to make global theme alterations.
   It uses the _layout template_ pattern "described in the Genshi
@@ -50,6 +51,8 @@ Orientation
   This allows you to use Xpath selectors to override snippets of HTML
   globally.
 
-* The custom package edit form at ``package_form.py`` follows the
-  conventions in the "main CKAN
-  documentation":http://packages.python.org/ckan/forms.html
+* The custom package edit form at ``package_form.py`` follows a deprecated
+  way to make a form (using FormAlchemy). This part of the Example Theme needs
+  updating. In the meantime, follow the instructions at: 
+  http://readthedocs.org/docs/ckan/en/latest/forms.html
+
