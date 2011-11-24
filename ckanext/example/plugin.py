@@ -82,14 +82,18 @@ class ExamplePlugin(SingletonPlugin):
         Note that we have also provided a custom register form
         template at ``theme/templates/user/register.html``.
         """
-        # Note that when we set up the route, we must use the form
-        # that gives it a name (i.e. in this case, 'register'), so it
-        # works correctly with the url_for helper::
-        #    h.url_for('register')
-        map.connect('register',
-                    '/user/register',
+        # Hook in our custom user controller at the points of creation
+        # and edition.
+        map.connect('/user/register',
                     controller='ckanext.example.controller:CustomUserController',
-                    action='custom_register')
+                    action='register')
+        map.connect('/user/edit',
+                    controller='ckanext.example.controller:CustomUserController',
+                    action='edit')
+        map.connect('/user/edit/{id:.*}',
+                    controller='ckanext.example.controller:CustomUserController',
+                    action='edit')
+
         map.connect('/package/new', controller='package_formalchemy', action='new')
         map.connect('/package/edit/{id}', controller='package_formalchemy', action='edit')
         return map
