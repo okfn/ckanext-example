@@ -43,7 +43,7 @@
     <dt><label class="field_opt" for="date_released">Date released</label></dt>
     <dd><input id="date_released" name="date_released" size="40" type="text" value="${data.get('date_released', '')}" /></dd>
     <dd class="instructions basic">The date of the official release of the initial version of the dataset</dd>
-    <dd class="instructions further">This is probably not the date that it is uploaded to data.gov.uk. Be careful not to confuse a new 'version' of some data with a new dataset covering another time period or geographic area.</dd>
+    <dd class="instructions further">This is the date that the data was officially released</dd>
     <dd class="hints">DD/MM/YYYY</dd>
     <dd class="field_error" py:if="errors.get('date_released', '')">${errors.get('date_released', '')}</dd>
 
@@ -81,73 +81,6 @@
     <dd><input id="precision" name="precision" size="40" type="text" value="${data.get('precision', '')}"/></dd>
     <dd class="instructions basic">Indicate the level of precision in the data, to avoid over-interpretation.</dd>
     <dd class="hints">e.g. 'per cent to two decimal places' or 'as supplied by respondents'</dd>
-
-    <dt><label class="field_opt" for="geographic_granularity">Geographic granularity</label></dt>
-    <dd>
-      <select class="short" id="geographic_granularity" name="geographic_granularity">
-        <py:for each="geog_name, geog_desc in c.geographic_granularity">
-          <option value="${geog_name}" py:attrs="{'selected': 'selected' if data.get('geographic_granularity', '') == geog_name else None}" >
-            ${geog_desc}
-          </option>
-        </py:for>
-      </select>
-      <label class="inline" for="geographic_granularity-other">Other: 
-        <input class="medium-width" id="geographic_granularity-other" 
-        name="geographic_granularity-other" type="text" value="${data.get('geographic_granularity-other', '')}"/>
-      </label>
-    </dd>
-    <dd class="instructions basic">The lowest level of geographic detail</dd>
-    <dd class="instructions further">This should give the lowest level of geographic detail given in the dataset if it is aggregated. If the data is not aggregated, and so the dataset goes down to the level of the entities being reported on (such as school, hospital, or police station), use 'point'. If none of the choices is appropriate or the granularity varies, please specify in the 'other' element.</dd>
-    <dd class="field_error" py:if="errors.get('geographic_granularity', '')">${errors.get('geographic_granularity', '')}</dd>
-
-    <dt><label class="field_opt" for="geographic_coverage">Geographic coverage</label></dt>
-    <dd py:with="geographic_coverage=data.get('geographic_coverage', [])">
-      <label for="england">
-        <input id="england" name="geographic_coverage" size="40" type="checkbox" 
-        value="england" py:attrs="{'checked': 'checked' if 'england' in geographic_coverage else None}"/> England</label>
-      <label for="scotland">
-        <input id="scotland" name="geographic_coverage" size="40" type="checkbox" 
-        value="scotland" py:attrs="{'checked': 'checked' if 'scotland' in geographic_coverage else None}"/> Scotland</label>
-      <label for="wales">
-        <input id="wales" name="geographic_coverage" size="40" type="checkbox" 
-        value="wales" py:attrs="{'checked': 'checked' if 'wales' in geographic_coverage else None}"/> Wales</label>
-      <label for="northern_ireland">
-        <input id="northern_ireland" name="geographic_coverage" size="40" type="checkbox" 
-        value="northern_ireland" py:attrs="{'checked': 'checked' if 'northern_ireland' in geographic_coverage else None}"/> Northern Ireland</label>
-      <label for="overseas">
-        <input id="overseas" name="geographic_coverage" size="40" type="checkbox" 
-        value="overseas" py:attrs="{'checked': 'checked' if 'overseas' in geographic_coverage else None}"/> Overseas</label>
-      <label for="global">
-        <input id="global" name="geographic_coverage" size="40" type="checkbox" 
-        value="global" py:attrs="{'checked': 'checked' if 'global' in geographic_coverage else None}"/> Global</label>
-    </dd>
-    <dd class="instructions basic">The geographic coverage of this dataset.</dd>
-    <dd class="instructions further">Where a dataset covers multiple areas, the system will automatically group these (e.g. 'England', 'Scotland' and 'Wales' all being selected would be shown as 'Great Britain').</dd>
-
-    <dt><label class="field_opt" for="temporal_granularity">Temporal granularity</label></dt>
-    <dd>
-      <select class="short" id="temporal_granularity" name="temporal_granularity">
-        <py:for each="temporal_name, temporal_desc in c.temporal_granularity">
-          <option value="${temporal_name}" py:attrs="{'selected': 'selected' if data.get('temporal_granularity', '') == temporal_name else None}" >
-            ${temporal_name}
-          </option>
-        </py:for>
-      </select>
-      <label class="inline" for="temporal_granularity-other">Other: 
-        <input class="medium-width" id="temporal_granularity-other" name="temporal_granularity-other" type="text" value="${data.get('temporal_granularity-other', '')}"/>
-      </label>
-    </dd>
-    <dd class="instructions basic">The lowest level of temporal detail granularity</dd>
-    <dd class="instructions further">This should give the lowest level of temporal detail given in the dataset if it is aggregated, expressed as an interval of time. If the data is not aggregated over time, and so the dataset goes down to the instants that reported events occurred (such as the timings of high and low tides), use 'point'. If none of the choices is appropriate or the granularity varies, please specify in the 'other' element.</dd>
-
-    <dt><label class="field_opt" for="temporal_coverage">Temporal coverage</label></dt>
-    <dd>
-      <input class="medium-width" id="temporal_coverage-from" name="temporal_coverage-from" type="text" value="${data.get('temporal_coverage-from', '')}" /> - 
-      <input class="medium-width" id="temporal_coverage-to" name="temporal_coverage-to" type="text" value="${data.get('temporal_coverage-to', '')}" />
-    </dd>
-    <dd class="instructions basic">The temporal coverage of this dataset.</dd>
-    <dd class="instructions further">If available, please indicate the time as well as the date. Where data covers only a single day, the 'To' sub-element can be left blank.</dd>
-    <dd class="hints">e.g. 21/03/2007 - 03/10/2009 or 07:45 31/03/2006</dd>
 
     <dt><label class="field_opt" for="url">URL</label></dt>
     <dd><input id="url" name="url" type="text" value="${data.get('url', '')}"/></dd>

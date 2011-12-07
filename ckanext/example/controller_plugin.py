@@ -28,38 +28,20 @@ from ckan.lib.navl.validators import (ignore_missing,
 
 log = logging.getLogger(__name__)
 
-geographic_granularity = [('', ''),
-                          ('national', 'national'),
-                          ('regional', 'regional'),
-                          ('local authority', 'local authority'),
-                          ('ward', 'ward'),
-                          ('point', 'point'),
-                          ('other', 'other - please specify')]
-
-update_frequency = [('', ''),
-                    ('never', 'never'),
-                    ('discontinued', 'discontinued'),
-                    ('annual', 'annual'),
-                    ('quarterly', 'quarterly'),
-                    ('monthly', 'monthly'),
-                    ('other', 'other - please specify')]
-
-temporal_granularity = [("",""),
-                       ("year","year"),
-                       ("quarter","quarter"),
-                       ("month","month"),
-                       ("week","week"),
-                       ("day","day"),
-                       ("hour","hour"),
-                       ("point","point"),
-                       ("other","other - please specify")]
 
 
-class ExamplePackageController(SingletonPlugin):
+class ExampleDatasetForm(SingletonPlugin):
+    """
+
+    """
 
     implements(IDatasetForm, inherit=True)
 
     def package_form(self):
+        """
+        Returns a string representing the location of the template to be
+        rendered.  e.g. "package/new_package_form.html".
+        """        
         return 'controller/package_plugin.html'
 
     def is_fallback(self):
@@ -85,14 +67,12 @@ class ExamplePackageController(SingletonPlugin):
         """
         return ["example"]
 
-    def _setup_template_variables(self, context, data_dict=None):
+    def setup_template_variables(self, context, data_dict=None):
+        """
+        Add variables to c just prior to the template being rendered.
+        """        
         c.licences = [('', '')] + model.Package.get_license_options()
-        c.geographic_granularity = geographic_granularity
-        c.update_frequency = update_frequency
-        c.temporal_granularity = temporal_granularity 
-
         c.publishers = self.get_publishers()
-
         c.is_sysadmin = Authorizer().is_sysadmin(c.user)
         c.resource_columns = model.Resource.get_columns()
 
@@ -102,8 +82,11 @@ class ExamplePackageController(SingletonPlugin):
             c.auth_for_change_state = Authorizer().am_authorized(
                 c, model.Action.CHANGE_STATE, pkg)
 
-    def _form_to_db_schema(self):
-
+    def form_to_db_schema(self):
+        """
+        Returns the schema for mapping package data from a form to a format
+        suitable for the database.
+        """
         schema = {
             'title': [not_empty, unicode],
             'name': [not_empty, unicode, val.name_validator, val.package_name_validator],
@@ -112,16 +95,6 @@ class ExamplePackageController(SingletonPlugin):
             'date_released': [date_to_db, convert_to_extras],
             'date_updated': [date_to_db, convert_to_extras],
             'date_update_future': [date_to_db, convert_to_extras],
-            'update_frequency': [use_other, unicode, convert_to_extras],
-            'update_frequency-other': [],
-            'precision': [unicode, convert_to_extras],
-            'geographic_granularity': [use_other, unicode, convert_to_extras],
-            'geographic_granularity-other': [],
-            'geographic_coverage': [ignore_missing, convert_geographic_to_db, convert_to_extras],
-            'temporal_granularity': [use_other, unicode, convert_to_extras],
-            'temporal_granularity-other': [],
-            'temporal_coverage-from': [date_to_db, convert_to_extras],
-            'temporal_coverage-to': [date_to_db, convert_to_extras],
             'url': [unicode],
             'taxonomy_url': [unicode, convert_to_extras],
 
@@ -144,18 +117,16 @@ class ExamplePackageController(SingletonPlugin):
         }
         return schema
     
-    def _db_to_form_schema(data):
+    def db_to_form_schema(data):
+        """
+        Returns the schema for mapping package data from the database into a
+        format suitable for the form (optional)
+        """
         schema = {
             'date_released': [convert_from_extras, ignore_missing, date_to_form],
             'date_updated': [convert_from_extras, ignore_missing, date_to_form],
             'date_update_future': [convert_from_extras, ignore_missing, date_to_form],
-            'update_frequency': [convert_from_extras, ignore_missing, extract_other(update_frequency)],
             'precision': [convert_from_extras, ignore_missing],
-            'geographic_granularity': [convert_from_extras, ignore_missing, extract_other(geographic_granularity)],
-            'geographic_coverage': [convert_from_extras, ignore_missing, convert_geographic_to_form],
-            'temporal_granularity': [convert_from_extras, ignore_missing, extract_other(temporal_granularity)],
-            'temporal_coverage-from': [convert_from_extras, ignore_missing, date_to_form],
-            'temporal_coverage-to': [convert_from_extras, ignore_missing, date_to_form],
             'taxonomy_url': [convert_from_extras, ignore_missing],
 
             'resources': default_schema.default_resource_schema(),
@@ -177,46 +148,15 @@ class ExamplePackageController(SingletonPlugin):
         }
         return schema
 
-    def _check_data_dict(self, data_dict):
+    def check_data_dict(self, data_dict):
+        """
+        Check if the return data is correct.
+
+        raise a DataError if not.
+        """
         return
 
     def get_publishers(self):
+        """
+        """
         return [('pub1', 'pub2')]
-
-
-def use_other(key, data, errors, context):
-
-    other_key = key[-1] + '-other'
-    other_value = data.get((other_key,), '').strip()
-    if other_value:
-        data[key] = other_value
-
-def extract_other(option_list):
-
-    def other(key, data, errors, context):
-        value = data[key]
-        if value in dict(option_list).keys():
-            return
-        elif value is missing:
-            data[key] = ''
-            return
-        else:
-            data[key] = 'other'
-            other_key = key[-1] + '-other'
-            data[(other_key,)] = value
-    return other
-            
-def convert_geographic_to_db(value, context):
-
-    if isinstance(value, list):
-        regions = value
-    elif value:
-        regions = [value]
-    else:
-        regions = []
-        
-    return GeoCoverageType.get_instance().form_to_db(regions)
-
-def convert_geographic_to_form(value, context):
-
-    return GeoCoverageType.get_instance().db_to_form(value)
