@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1'
+version = '0.2'
 
 setup(
 	name='ckanext-example',
@@ -25,7 +25,8 @@ setup(
 	entry_points=\
 	"""
         [ckan.plugins]
-	example=ckanext.example.plugin:ExamplePlugin
+	    example=ckanext.example.plugin:ExamplePlugin
+        example_package=ckanext.example.controller_plugin:ExamplePackageController
 
         [ckan.forms]
         example_form = ckanext.example.package_form:get_example_fieldset
