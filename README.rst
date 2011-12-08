@@ -13,6 +13,9 @@ It comprises:
 
 * A custom Package edit form
 
+* A plugin that allows for custom forms to be used for datasets based on 
+  their "type".
+
 * A custom User registration and edition form
 
 * Some simple template customisations
