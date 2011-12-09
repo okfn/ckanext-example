@@ -28,7 +28,55 @@ from ckan.lib.navl.validators import (ignore_missing,
 
 log = logging.getLogger(__name__)
 
+class ExampleGroupForm(SingletonPlugin):
+    """This plugin demonstrates how a theme packaged as a CKAN
+    extension might extend CKAN behaviour.
 
+    In this case, we implement twos extension interfaces to provide custom 
+    forms for specific types of group.
+
+      - ``IConfigurer`` allows us to override configuration normally
+        found in the ``ini``-file.  Here we use it to specify where the
+        form templates can be found.
+      - ``IGroupForm`` allows us to provide a custom form for a dataset
+        based on the 'type' that may be set for a group.  Where the 
+        'type' matches one of the values in group_types then this 
+        class will be used. 
+    """
+    implements(IGroupForm, inherit=True)
+    implements(IConfigurer, inherit=True)    
+    
+    def update_config(self, config):
+        """
+        This IConfigurer implementation causes CKAN to look in the
+        ```templates``` directory when looking for the group_form()
+        """
+        here = os.path.dirname(__file__)
+        rootdir = os.path.dirname(os.path.dirname(here))
+        template_dir = os.path.join(rootdir, 'ckanext',
+                                    'example', 'theme', 'templates')
+        config['extra_template_paths'] = ','.join([template_dir,
+                config.get('extra_template_paths', '')])
+            
+    def group_form(self):
+        """
+        Returns a string representing the location of the template to be
+        rendered.  e.g. "forms/group_form.html".
+        """        
+        return 'forms/group_form.html'
+
+    def is_fallback(self):
+        """
+        Returns true iff this provides the fallback behaviour, when no other
+        plugin instance matches a group's type.
+
+        As this is not the fallback controller we should return False.  If 
+        we were wanting to act as the fallback, we'd return True
+        """
+        return False                
+                
+                
+                
 
 class ExampleDatasetForm(SingletonPlugin):
     """This plugin demonstrates how a theme packaged as a CKAN
