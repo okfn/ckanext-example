@@ -26,7 +26,7 @@ setup(
 	"""
         [ckan.plugins]
 	    example=ckanext.example.plugin:ExamplePlugin
-        example_package=ckanext.example.controller_plugin:ExampleDatasetForm
+        example_datasetform=ckanext.example.forms:ExampleDatasetForm
 
         [ckan.forms]
         example_form = ckanext.example.package_form:get_example_fieldset
