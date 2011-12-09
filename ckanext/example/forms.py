@@ -64,7 +64,7 @@ class ExampleDatasetForm(SingletonPlugin):
         Returns a string representing the location of the template to be
         rendered.  e.g. "package/new_package_form.html".
         """        
-        return 'controller/package_plugin.html'
+        return 'forms/dataset_form.html'
 
     def is_fallback(self):
         """
