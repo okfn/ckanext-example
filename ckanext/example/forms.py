@@ -16,7 +16,7 @@ from ckan.lib.field_types import DateType, DateConvertError
 from ckan.lib.navl.dictization_functions import Invalid
 from ckan.lib.navl.dictization_functions import validate, missing
 from ckan.lib.navl.dictization_functions import DataError, flatten_dict, unflatten
-from ckan.plugins import IDatasetForm, IConfigurer
+from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer
 from ckan.plugins import implements, SingletonPlugin
 
 from ckan.lib.navl.validators import (ignore_missing,
@@ -63,7 +63,22 @@ class ExampleGroupForm(SingletonPlugin):
         Returns a string representing the location of the template to be
         rendered.  e.g. "forms/group_form.html".
         """        
+        from pdb import set_trace; set_trace()
+        
         return 'forms/group_form.html'
+
+    def group_types(self):
+        """
+        Returns an iterable of group type strings.
+
+        If a request involving a group of one of those types is made, then
+        this plugin instance will be delegated to.
+
+        There must only be one plugin registered to each group type.  Any
+        attempts to register more than one plugin instance to a given group
+        type will raise an exception at startup.
+        """
+        return ["example"]
 
     def is_fallback(self):
         """
