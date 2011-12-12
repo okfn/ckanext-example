@@ -30,15 +30,17 @@ from ckan.lib.navl.validators import (ignore_missing,
 log = logging.getLogger(__name__)
 
 class ExampleGroupForm(SingletonPlugin):
-    """This plugin demonstrates how a theme packaged as a CKAN
-    extension might extend CKAN behaviour.
+    """This plugin demonstrates how a class packaged as a CKAN
+    extension might extend CKAN behaviour by providing custom forms
+    based on the type of a Group.
 
-    In this case, we implement twos extension interfaces to provide custom 
+    In this case, we implement two extension interfaces to provide custom 
     forms for specific types of group.
 
       - ``IConfigurer`` allows us to override configuration normally
         found in the ``ini``-file.  Here we use it to specify where the
         form templates can be found.
+        
       - ``IGroupForm`` allows us to provide a custom form for a dataset
         based on the 'type' that may be set for a group.  Where the 
         'type' matches one of the values in group_types then this 
@@ -89,7 +91,6 @@ class ExampleGroupForm(SingletonPlugin):
         """
         return False                
                 
-    #
     def form_to_db_schema(self):
         """
         Returns the schema for mapping group data from a form to a format

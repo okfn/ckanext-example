@@ -13,6 +13,8 @@ It comprises:
 
 * A custom Package edit form
 
+* A custom Group edit form
+
 * A plugin that allows for custom forms to be used for datasets based on 
   their "type".
 
