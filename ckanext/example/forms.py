@@ -7,6 +7,7 @@ from ckan.logic.converters import date_to_db, date_to_form, convert_to_extras, c
 from ckan.logic import NotFound, NotAuthorized, ValidationError
 from ckan.logic import tuplize_dict, clean_dict, parse_params
 import ckan.logic.schema as default_schema
+from ckan.logic.schema import group_form_schema
 from ckan.logic.schema import package_form_schema
 import ckan.logic.validators as val
 from ckan.lib.base import BaseController, render, c, model, abort, request
@@ -63,8 +64,6 @@ class ExampleGroupForm(SingletonPlugin):
         Returns a string representing the location of the template to be
         rendered.  e.g. "forms/group_form.html".
         """        
-        from pdb import set_trace; set_trace()
-        
         return 'forms/group_form.html'
 
     def group_types(self):
@@ -78,7 +77,7 @@ class ExampleGroupForm(SingletonPlugin):
         attempts to register more than one plugin instance to a given group
         type will raise an exception at startup.
         """
-        return ["example"]
+        return ["example_dataset_group"]
 
     def is_fallback(self):
         """
@@ -90,7 +89,32 @@ class ExampleGroupForm(SingletonPlugin):
         """
         return False                
                 
-                
+    #
+    def form_to_db_schema(self):
+        """
+        Returns the schema for mapping group data from a form to a format
+        suitable for the database.
+        """
+        return group_form_schema()
+
+    def db_to_form_schema(self):
+        """
+        Returns the schema for mapping group data from the database into a
+        format suitable for the form (optional)
+        """
+        return {}
+        
+    def check_data_dict(self, data_dict):
+        """
+        Check if the return data is correct.
+
+        raise a DataError if not.
+        """
+
+    def setup_template_variables(self, context, data_dict):
+        """
+        Add variables to c just prior to the template being rendered.
+        """                
                 
 
 class ExampleDatasetForm(SingletonPlugin):
@@ -176,7 +200,6 @@ class ExampleDatasetForm(SingletonPlugin):
         schema = {
             'title': [not_empty, unicode],
             'name': [not_empty, unicode, val.name_validator, val.package_name_validator],
-            'notes': [not_empty, unicode],
 
             'date_released': [date_to_db, convert_to_extras],
             'date_updated': [date_to_db, convert_to_extras],

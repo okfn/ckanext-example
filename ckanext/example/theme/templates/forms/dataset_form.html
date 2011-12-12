@@ -12,7 +12,7 @@
 </ul>
 </div>
 
-<fieldset>
+<fieldset id='section-basic-information'>
   <legend>Basic information</legend>
   <dl>
     <dt><label class="field_req" for="title">Title *</label></dt>
@@ -37,7 +37,7 @@
   </dl>
 </fieldset>
 
-<fieldset>
+<fieldset id='section-further-information'>
   <legend>Details</legend>
   <dl>
     <dt><label class="field_opt" for="date_released">Date released</label></dt>
@@ -95,7 +95,7 @@
     <dd class="field_error" py:if="errors.get('taxonomy_url', '')">${errors.get('taxonomy_url', '')}</dd>
   </dl>
   </fieldset>
-<fieldset>
+<fieldset id='section-resources'>
   <legend>Resources</legend>
   <table class="flexitable">
     <thead>
@@ -125,7 +125,7 @@
   <div class="field_error" py:if="errors.get('resources', '')">Package resource(s) incomplete.</div>
 </fieldset>
 
-<fieldset>
+<fieldset id='section-more-details'>
   <legend>More details</legend>
   <dl>
     <dt><label class="field_req" for="published_by">Published by *</label></dt>
