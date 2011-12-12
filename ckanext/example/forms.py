@@ -79,7 +79,7 @@ class ExampleGroupForm(SingletonPlugin):
         attempts to register more than one plugin instance to a given group
         type will raise an exception at startup.
         """
-        return ["example_dataset_group"]
+        return ["example_group_form"]
 
     def is_fallback(self):
         """
@@ -175,7 +175,7 @@ class ExampleDatasetForm(SingletonPlugin):
         attempts to register more than one plugin instance to a given package
         type will raise an exception at startup.
         """
-        return ["example"]
+        return ["example_dataset_form"]
 
     def setup_template_variables(self, context, data_dict=None):
         """
