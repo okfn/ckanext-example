@@ -21,9 +21,11 @@ class ExamplePlugin(SingletonPlugin):
         found in the ``ini``-file.  Here we use it to specify the site
         title, and to tell CKAN to look in this package for templates
         and resources that customise the core look and feel.
+        
       - ``IGenshiStreamFilter`` allows us to filter and transform the
         HTML stream just before it is rendered.  In this case we use
         it to rename "frob" to "foobar"
+        
       - ``IRoutes`` allows us to add new URLs, or override existing
         URLs.  In this example we use it to override the default
         ``/register`` behaviour with a custom controller

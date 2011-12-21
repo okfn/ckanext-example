@@ -79,7 +79,7 @@ class ExampleGroupForm(SingletonPlugin):
         attempts to register more than one plugin instance to a given group
         type will raise an exception at startup.
         """
-        return ["example_group_form"]
+        return ["testgroup"]
 
     def is_fallback(self):
         """
