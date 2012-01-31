@@ -3,12 +3,12 @@ from ckan.authz import Authorizer
 import ckan.logic.action.create as create
 import ckan.logic.action.update as update
 import ckan.logic.action.get as get
-from ckan.logic.converters import date_to_db, date_to_form, convert_to_extras, convert_from_extras
+from ckan.logic.converters import date_to_db, date_to_form, convert_to_extras,\
+    convert_from_extras, convert_to_tags
 from ckan.logic import NotFound, NotAuthorized, ValidationError
 from ckan.logic import tuplize_dict, clean_dict, parse_params
 import ckan.logic.schema as default_schema
-from ckan.logic.schema import group_form_schema
-from ckan.logic.schema import package_form_schema
+from ckan.logic.schema import package_form_schema, group_form_schema
 import ckan.logic.validators as val
 from ckan.lib.base import BaseController, render, c, model, abort, request
 from ckan.lib.base import redirect, _, config, h
@@ -162,7 +162,7 @@ class ExampleDatasetForm(SingletonPlugin):
         As this is not the fallback controller we should return False.  If 
         we were wanting to act as the fallback, we'd return True
         """
-        return False
+        return True
 
     def package_types(self):
         """
@@ -198,33 +198,11 @@ class ExampleDatasetForm(SingletonPlugin):
         Returns the schema for mapping package data from a form to a format
         suitable for the database.
         """
-        schema = {
-            'title': [not_empty, unicode],
-            'name': [not_empty, unicode, val.name_validator, val.package_name_validator],
-
-            'date_released': [date_to_db, convert_to_extras],
-            'date_updated': [date_to_db, convert_to_extras],
-            'date_update_future': [date_to_db, convert_to_extras],
-            'url': [unicode],
-            'taxonomy_url': [unicode, convert_to_extras],
-
-            'resources': default_schema.default_resource_schema(),
-            
+        schema = package_form_schema()
+        schema.update({
             'published_by': [not_empty, unicode, convert_to_extras],
-            'published_via': [ignore_missing, unicode, convert_to_extras],
-            'author': [ignore_missing, unicode],
-            'author_email': [ignore_missing, unicode],
-            'mandate': [ignore_missing, unicode, convert_to_extras],
-            'license_id': [ignore_missing, unicode],
-            'tag_string': [ignore_missing, val.tag_string_convert],
-            'national_statistic': [ignore_missing, convert_to_extras],
-            'state': [val.ignore_not_admin, ignore_missing],
-
-            'log_message': [unicode, val.no_http],
-
-            '__extras': [ignore],
-            '__junk': [empty],
-        }
+            'vocab_tag_string': [ignore_missing, convert_to_tags('example_vocab')],
+        })
         return schema
     
     def db_to_form_schema(data):
@@ -232,30 +210,13 @@ class ExampleDatasetForm(SingletonPlugin):
         Returns the schema for mapping package data from the database into a
         format suitable for the form (optional)
         """
-        schema = {
-            'date_released': [convert_from_extras, ignore_missing, date_to_form],
-            'date_updated': [convert_from_extras, ignore_missing, date_to_form],
-            'date_update_future': [convert_from_extras, ignore_missing, date_to_form],
-            'precision': [convert_from_extras, ignore_missing],
-            'taxonomy_url': [convert_from_extras, ignore_missing],
-
-            'resources': default_schema.default_resource_schema(),
-            'extras': {
-                'key': [],
-                'value': [],
-                '__extras': [keep_extras]
-            },
+        schema = package_form_schema()
+        schema.update({
             'tags': {
                 '__extras': [keep_extras]
             },
-            
             'published_by': [convert_from_extras, ignore_missing],
-            'published_via': [convert_from_extras, ignore_missing],
-            'mandate': [convert_from_extras, ignore_missing],
-            'national_statistic': [convert_from_extras, ignore_missing],
-            '__extras': [keep_extras],
-            '__junk': [ignore],
-        }
+        })
         return schema
 
     def check_data_dict(self, data_dict):
