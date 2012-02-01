@@ -4,7 +4,7 @@ import ckan.logic.action.create as create
 import ckan.logic.action.update as update
 import ckan.logic.action.get as get
 from ckan.logic.converters import date_to_db, date_to_form, convert_to_extras,\
-    convert_from_extras, convert_to_tags
+    convert_from_extras, convert_to_tags, convert_from_tags
 from ckan.logic import NotFound, NotAuthorized, ValidationError
 from ckan.logic import tuplize_dict, clean_dict, parse_params
 import ckan.logic.schema as default_schema
@@ -17,7 +17,7 @@ from ckan.lib.field_types import DateType, DateConvertError
 from ckan.lib.navl.dictization_functions import Invalid
 from ckan.lib.navl.dictization_functions import validate, missing
 from ckan.lib.navl.dictization_functions import DataError, flatten_dict, unflatten
-from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer
+from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer, IConfigurable
 from ckan.plugins import implements, SingletonPlugin
 
 from ckan.lib.navl.validators import (ignore_missing,
@@ -134,6 +134,7 @@ class ExampleDatasetForm(SingletonPlugin):
     """
     implements(IDatasetForm, inherit=True)
     implements(IConfigurer, inherit=True)    
+    implements(IConfigurable)
     
     def update_config(self, config):
         """
@@ -146,6 +147,19 @@ class ExampleDatasetForm(SingletonPlugin):
                                     'example', 'theme', 'templates')
         config['extra_template_paths'] = ','.join([template_dir,
                 config.get('extra_template_paths', '')])
+
+    def configure(self, config):
+        """
+        Adds our new vocabulary to the database if it doesn't
+        already exist.
+        """
+        self.vocab_name = u'example_vocab'
+        v = model.Vocabulary.get(self.vocab_name)
+        if not v:
+            log.info("Adding vocab %s" % self.vocab_name)
+            vocab = model.Vocabulary(self.vocab_name)
+            model.Session.add(vocab)
+            model.Session.commit()
 
     def package_form(self):
         """
@@ -201,11 +215,11 @@ class ExampleDatasetForm(SingletonPlugin):
         schema = package_form_schema()
         schema.update({
             'published_by': [not_empty, unicode, convert_to_extras],
-            'vocab_tag_string': [ignore_missing, convert_to_tags('example_vocab')],
+            'vocab_tag_string': [ignore_missing, convert_to_tags(self.vocab_name)],
         })
         return schema
     
-    def db_to_form_schema(data):
+    def db_to_form_schema(self):
         """
         Returns the schema for mapping package data from the database into a
         format suitable for the form (optional)
@@ -215,6 +229,7 @@ class ExampleDatasetForm(SingletonPlugin):
             'tags': {
                 '__extras': [keep_extras]
             },
+            'vocab_tag_string': [convert_from_tags(self.vocab_name), ignore_missing],
             'published_by': [convert_from_extras, ignore_missing],
         })
         return schema
