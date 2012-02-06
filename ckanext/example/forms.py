@@ -10,6 +10,7 @@ from ckan.logic import tuplize_dict, clean_dict, parse_params
 import ckan.logic.schema as default_schema
 from ckan.logic.schema import package_form_schema, group_form_schema
 import ckan.logic.validators as val
+from ckan.model import vocabulary
 from ckan.lib.base import BaseController, render, c, model, abort, request
 from ckan.lib.base import redirect, _, config, h
 from ckan.lib.package_saver import PackageSaver
@@ -154,7 +155,7 @@ class ExampleDatasetForm(SingletonPlugin):
         already exist.
         """
         self.vocab_name = u'example_vocab'
-        v = model.Vocabulary.get(self.vocab_name)
+        v = vocabulary.get(self.vocab_name)
         if not v:
             log.info("Adding vocab %s" % self.vocab_name)
             vocab = model.Vocabulary(self.vocab_name)
