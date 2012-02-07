@@ -2,6 +2,7 @@ import os, logging
 from ckan.authz import Authorizer
 from ckan.logic.converters import convert_to_extras,\
     convert_from_extras, convert_to_tags, convert_from_tags, free_tags_only
+from ckan.logic import get_action
 from ckan.logic.schema import package_form_schema, group_form_schema
 from ckan.lib.base import c, model
 from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer, IConfigurable
@@ -141,6 +142,12 @@ class ExampleDatasetForm(SingletonPlugin):
             vocab = model.Vocabulary(self.vocab_name)
             model.Session.add(vocab)
             model.Session.commit()
+            log.info("Adding example tags to vocab %s" % self.vocab_name)
+            vocab_tag_1 = model.Tag('vocab-tag-example-1', vocab.id)
+            vocab_tag_2 = model.Tag('vocab-tag-example-2', vocab.id)
+            model.Session.add(vocab_tag_1)
+            model.Session.add(vocab_tag_2)
+            model.Session.commit()
 
     def package_form(self):
         """
@@ -181,6 +188,7 @@ class ExampleDatasetForm(SingletonPlugin):
         c.publishers = [('Example publisher', 'Example publisher 2')]
         c.is_sysadmin = Authorizer().is_sysadmin(c.user)
         c.resource_columns = model.Resource.get_columns()
+        c.vocab_tags = get_action('tag_list')(context, {'vocabulary_name': self.vocab_name})
 
         ## This is messy as auths take domain object not data_dict
         pkg = context.get('package') or c.pkg
