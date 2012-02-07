@@ -136,7 +136,7 @@ class ExampleDatasetForm(SingletonPlugin):
         already exist.
         """
         self.vocab_name = u'example_vocab'
-        v = vocabulary.get(self.vocab_name)
+        v = model.Vocabulary.get(self.vocab_name)
         if not v:
             log.info("Adding vocab %s" % self.vocab_name)
             vocab = model.Vocabulary(self.vocab_name)
