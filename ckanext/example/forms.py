@@ -1,9 +1,8 @@
 import os, logging
 from ckan.authz import Authorizer
 from ckan.logic.converters import convert_to_extras,\
-    convert_from_extras, convert_to_tags, convert_from_tags
+    convert_from_extras, convert_to_tags, convert_from_tags, free_tags_only
 from ckan.logic.schema import package_form_schema, group_form_schema
-from ckan.model import vocabulary
 from ckan.lib.base import c, model
 from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer, IConfigurable
 from ckan.plugins import implements, SingletonPlugin
@@ -209,7 +208,7 @@ class ExampleDatasetForm(SingletonPlugin):
         schema = package_form_schema()
         schema.update({
             'tags': {
-                '__extras': [keep_extras]
+                '__extras': [keep_extras, free_tags_only]
             },
             'vocab_tag_string': [convert_from_tags(self.vocab_name), ignore_missing],
             'published_by': [convert_from_extras, ignore_missing],
