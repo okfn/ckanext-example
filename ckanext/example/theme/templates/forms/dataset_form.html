@@ -147,8 +147,14 @@
   <dl>
     <dt class="tags-label"><label class="field_opt" for="tags_vocab">Tags</label></dt>
     <dd class="tags-field">
-      <input class="long autocomplete-tag" id="vocab_tag_string" name="vocab_tag_string" size="60" type="text" 
-               value="${data.get('vocab_tag_string') or ', '.join([tag['name'] for tag in data.get('vocab_tags', [])])}" />
+      <select id="vocab_tags" name="vocab_tags" size="60" multiple="multiple">
+        <py:for each="tag in c.vocab_tags">
+          <py:choose test="">
+          <option py:when="tag in data.get('vocab_tags_selected', [])" selected="selected" value="${tag}">${tag}</option>
+          <option py:otherwise="" value="${tag}">${tag}</option>
+          </py:choose>
+        </py:for>
+      </select>
     </dd>
     <dd class="tags-instructions instructions basic" i18n:msg="">Similar to standard CKAN tags, but these use a fixed vocabulary.</dd>
     <dd class="tags-instructions field_error" py:if="errors.get('vocab_tag_string', '')">${errors.get('vocab_tag_string', '')}</dd>

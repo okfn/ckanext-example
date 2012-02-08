@@ -204,7 +204,7 @@ class ExampleDatasetForm(SingletonPlugin):
         schema = package_form_schema()
         schema.update({
             'published_by': [not_empty, unicode, convert_to_extras],
-            'vocab_tag_string': [ignore_missing, convert_to_tags(self.vocab_name)],
+            'vocab_tags': [ignore_missing, convert_to_tags(self.vocab_name)],
         })
         return schema
     
@@ -218,7 +218,7 @@ class ExampleDatasetForm(SingletonPlugin):
             'tags': {
                 '__extras': [keep_extras, free_tags_only]
             },
-            'vocab_tag_string': [convert_from_tags(self.vocab_name), ignore_missing],
+            'vocab_tags_selected': [convert_from_tags(self.vocab_name), ignore_missing],
             'published_by': [convert_from_extras, ignore_missing],
         })
         return schema
