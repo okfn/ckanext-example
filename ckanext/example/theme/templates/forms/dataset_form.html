@@ -147,7 +147,7 @@
   <dl>
     <dt class="tags-label"><label class="field_opt" for="tags_vocab">Tags</label></dt>
     <dd class="tags-field">
-      <select id="vocab_tags" name="vocab_tags" size="60" multiple="multiple">
+      <select id="vocab_tags" class="chzn-select" name="vocab_tags" size="60" multiple="multiple">
         <py:for each="tag in c.vocab_tags">
           <py:choose test="">
           <option py:when="tag in data.get('vocab_tags_selected', [])" selected="selected" value="${tag}">${tag}</option>
