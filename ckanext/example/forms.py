@@ -188,7 +188,7 @@ class ExampleDatasetForm(SingletonPlugin):
         c.publishers = [('Example publisher', 'Example publisher 2')]
         c.is_sysadmin = Authorizer().is_sysadmin(c.user)
         c.resource_columns = model.Resource.get_columns()
-        c.vocab_tags = get_action('tag_list')(context, {'vocabulary_name': self.vocab_name})
+        c.vocab_tags = get_action('tag_list')(context, {'vocabulary_id': self.vocab_name})
 
         ## This is messy as auths take domain object not data_dict
         pkg = context.get('package') or c.pkg
