@@ -31,7 +31,6 @@ To install this package, from your CKAN virtualenv, run the following from your 
 
 Then activate it by setting ``ckan.plugins = example`` in your main ``ini``-file.
 
-
 Orientation
 ===========
 
@@ -62,4 +61,19 @@ Orientation
   way to make a form (using FormAlchemy). This part of the Example Theme needs
   updating. In the meantime, follow the instructions at: 
   http://readthedocs.org/docs/ckan/en/latest/forms.html
+
+Example Tags With Vocabularies
+==============================
+
+To add example tag vocabulary data to the database, from the ckanext-example directory run:
+
+::
+
+    paster example create-example-vocabs -c <path to your ckan config file>
+
+This data can be removed with
+
+::
+
+    paster example clean -c <path to your ckan config file>
 
