@@ -143,40 +143,38 @@
     <dd class="tags-instructions hints">e.g. pollution, rivers, water quality</dd>
     <dd class="tags-instructions field_error" py:if="errors.get('tag_string', '')">${errors.get('tag_string', '')}</dd>
   </dl>
-  <h3 py:if="c.vocab_tags">Tags With Example Vocabulary</h3>
-  <dl py:if="c.vocab_tags">
 
-  <!-- <h3>Musical Genre</h3> -->
-  <!-- <dl> -->
-  <!--   <dt class="tags-label"><label class="field_opt" for="tags_vocab">Tags</label></dt> -->
-  <!--   <dd class="tags-field"> -->
-  <!--     <select id="genre_tags" class="chzn-select" name="genre_tags" size="60" multiple="multiple"> -->
-  <!--       <py:for each="tag in c.genre_tags"> -->
-  <!--         <py:choose test=""> -->
-  <!--         <option py:when="tag in data.get('genre_tags_selected', [])" selected="selected" value="${tag}">${tag}</option> -->
-  <!--         <option py:otherwise="" value="${tag}">${tag}</option> -->
-  <!--         </py:choose> -->
-  <!--       </py:for> -->
-  <!--     </select> -->
-  <!--   </dd> -->
-  <!--   <dd class="tags-instructions field_error" py:if="errors.get('genre_tag_string', '')">${errors.get('genre_tag_string', '')}</dd> -->
-  <!-- </dl> -->
+  <h3 py:if="c.genre_tags">Musical Genre</h3>
+  <dl py:if="c.genre_tags">
+    <dt class="tags-label"><label class="field_opt" for="tags_vocab">Tags</label></dt>
+    <dd class="tags-field">
+      <select id="genre_tags" class="chzn-select" name="genre_tags" size="60" multiple="multiple">
+        <py:for each="tag in c.genre_tags">
+          <py:choose test="">
+          <option py:when="tag in data.get('genre_tags_selected', [])" selected="selected" value="${tag}">${tag}</option>
+          <option py:otherwise="" value="${tag}">${tag}</option>
+          </py:choose>
+        </py:for>
+      </select>
+    </dd>
+    <dd class="tags-instructions field_error" py:if="errors.get('genre_tag_string', '')">${errors.get('genre_tag_string', '')}</dd>
+  </dl>
 
-  <!-- <h3>Composer</h3> -->
-  <!-- <dl> -->
-  <!--   <dt class="tags-label"><label class="field_opt" for="tags_vocab">Tags</label></dt> -->
-  <!--   <dd class="tags-field"> -->
-  <!--     <select id="composer_tags" class="chzn-select" name="composer_tags" size="60" multiple="multiple"> -->
-  <!--       <py:for each="tag in c.composer_tags"> -->
-  <!--         <py:choose test=""> -->
-  <!--         <option py:when="tag in data.get('composer_tags_selected', [])" selected="selected" value="${tag}">${tag}</option> -->
-  <!--         <option py:otherwise="" value="${tag}">${tag}</option> -->
-  <!--         </py:choose> -->
-  <!--       </py:for> -->
-  <!--     </select> -->
-  <!--   </dd> -->
-  <!--   <dd class="tags-instructions field_error" py:if="errors.get('composer_tag_string', '')">${errors.get('composer_tag_string', '')}</dd> -->
-  <!-- </dl> -->
+  <h3 py:if="c.composer_tags">Composer</h3>
+  <dl py:if="c.composer_tags">
+    <dt class="tags-label"><label class="field_opt" for="tags_vocab">Tags</label></dt>
+    <dd class="tags-field">
+      <select id="composer_tags" class="chzn-select" name="composer_tags" size="60" multiple="multiple">
+        <py:for each="tag in c.composer_tags">
+          <py:choose test="">
+          <option py:when="tag in data.get('composer_tags_selected', [])" selected="selected" value="${tag}">${tag}</option>
+          <option py:otherwise="" value="${tag}">${tag}</option>
+          </py:choose>
+        </py:for>
+      </select>
+    </dd>
+    <dd class="tags-instructions field_error" py:if="errors.get('composer_tag_string', '')">${errors.get('composer_tag_string', '')}</dd>
+  </dl>
 
 </fieldset>
 <fieldset id='further-information'>

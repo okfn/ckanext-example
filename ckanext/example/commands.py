@@ -13,7 +13,7 @@ class ExampleCommand(CkanCommand):
 
     Usage::
 
-        paster example create-example-vocab -c <path to config file>
+        paster example create-example-vocabs -c <path to config file>
 
         paster example clean -c <path to config file>
             - Remove all data created by ckanext-example
@@ -34,32 +34,44 @@ class ExampleCommand(CkanCommand):
         cmd = self.args[0]
         self._load_config()
 
-        if cmd == 'create-example-vocab':
-            self.create_example_vocab()
+        if cmd == 'create-example-vocabs':
+            self.create_example_vocabs()
         else:
             log.error('Command "%s" not recognized' % (cmd,))
 
-    def create_example_vocab(self):
+    def create_example_vocabs(self):
         '''
-        Adds an example vocabulary to the database if it doesn't
-        already exist.
+        Adds example vocabularies to the database if they don't already exist.
         '''
         user = get_action('get_site_user')({'model': model, 'ignore_auth': True}, {})
         context = {'model': model, 'session': model.Session, 'user': user['name']}
-        data = {'id': forms.EXAMPLE_VOCAB}
 
         try:
+            data = {'id': forms.GENRE_VOCAB}
             get_action('vocabulary_show')(context, data)
-            log.info("Example tag vocabulary already exists, skipping.")
+            log.info("Example genre vocabulary already exists, skipping.")
         except NotFound:
-            log.info("Creating example vocab %s" % forms.EXAMPLE_VOCAB)
-            data = {'name': forms.EXAMPLE_VOCAB}
+            log.info("Creating vocab %s" % forms.GENRE_VOCAB)
+            data = {'name': forms.GENRE_VOCAB}
             vocab = get_action('vocabulary_create')(context, data)
-
-            log.info("Adding tag %s to vocab %s" % ('vocab-tag-example-1', forms.EXAMPLE_VOCAB))
-            data = {'name': 'vocab-tag-example-1', 'vocabulary_id': vocab['id']}
+            log.info("Adding tag %s to vocab %s" % ('jazz', forms.GENRE_VOCAB))
+            data = {'name': 'jazz', 'vocabulary_id': vocab['id']}
+            get_action('tag_create')(context, data)
+            log.info("Adding tag %s to vocab %s" % ('soul', forms.GENRE_VOCAB))
+            data = {'name': 'soul', 'vocabulary_id': vocab['id']}
             get_action('tag_create')(context, data)
 
-            log.info("Adding tag %s to vocab %s" % ('vocab-tag-example-2', forms.EXAMPLE_VOCAB))
-            data = {'name': 'vocab-tag-example-2', 'vocabulary_id': vocab['id']}
+        try:
+            data = {'id': forms.COMPOSER_VOCAB}
+            get_action('vocabulary_show')(context, data)
+            log.info("Example composer vocabulary already exists, skipping.")
+        except NotFound:
+            log.info("Creating vocab %s" % forms.COMPOSER_VOCAB)
+            data = {'name': forms.COMPOSER_VOCAB}
+            vocab = get_action('vocabulary_create')(context, data)
+            log.info("Adding tag %s to vocab %s" % ('Bob Mintzer', forms.COMPOSER_VOCAB))
+            data = {'name': 'Bob Mintzer', 'vocabulary_id': vocab['id']}
+            get_action('tag_create')(context, data)
+            log.info("Adding tag %s to vocab %s" % ('Steve Lewis', forms.COMPOSER_VOCAB))
+            data = {'name': 'Steve Lewis', 'vocabulary_id': vocab['id']}
             get_action('tag_create')(context, data)
