@@ -1,6 +1,8 @@
 import os
 from logging import getLogger
 
+from pylons import request
+from genshi.input import HTML
 from genshi.filters.transform import Transformer
 
 from ckan.plugins import implements, SingletonPlugin
@@ -21,9 +23,11 @@ class ExamplePlugin(SingletonPlugin):
         found in the ``ini``-file.  Here we use it to specify the site
         title, and to tell CKAN to look in this package for templates
         and resources that customise the core look and feel.
+        
       - ``IGenshiStreamFilter`` allows us to filter and transform the
         HTML stream just before it is rendered.  In this case we use
         it to rename "frob" to "foobar"
+        
       - ``IRoutes`` allows us to add new URLs, or override existing
         URLs.  In this example we use it to override the default
         ``/register`` behaviour with a custom controller
@@ -68,9 +72,26 @@ class ExamplePlugin(SingletonPlugin):
         This example filter renames 'frob' to 'foobar' (this string is
         found in the custom ``home/index.html`` template provided as
         part of the package).
+
+        It also adds the chosen JQuery plugin to the page if viewing the
+        dataset edit page (provides a better UX for working with tags with vocabularies)
         """
         stream = stream | Transformer('//p[@id="examplething"]/text()')\
                  .substitute(r'frob', r'foobar')
+
+        routes = request.environ.get('pylons.routes_dict')
+        if routes.get('controller') == 'package' \
+            and routes.get('action') == 'edit':
+                stream = stream | Transformer('head').append(HTML(
+                    '<link rel="stylesheet" href="/css/chosen.css" />'
+                ))
+                stream = stream | Transformer('body').append(HTML(
+                    '''
+                    <script src="/scripts/chosen.jquery.min.js" type="text/javascript"></script>'
+                    <script type="text/javascript">$(".chzn-select").chosen();</script>
+                    '''
+                ))
+
         return stream
 
     def before_map(self, map):

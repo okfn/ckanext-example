@@ -13,6 +13,11 @@ It comprises:
 
 * A custom Package edit form
 
+* A custom Group edit form
+
+* A plugin that allows for custom forms to be used for datasets based on 
+  their "type".
+
 * A custom User registration and edition form
 
 * Some simple template customisations
@@ -25,7 +30,6 @@ To install this package, from your CKAN virtualenv, run the following from your 
   pip install -e git+https://github.com/okfn/ckanext-example#egg=ckanext-example
 
 Then activate it by setting ``ckan.plugins = example`` in your main ``ini``-file.
-
 
 Orientation
 ===========
@@ -57,4 +61,19 @@ Orientation
   way to make a form (using FormAlchemy). This part of the Example Theme needs
   updating. In the meantime, follow the instructions at: 
   http://readthedocs.org/docs/ckan/en/latest/forms.html
+
+Example Tags With Vocabularies
+==============================
+
+To add example tag vocabulary data to the database, from the ckanext-example directory run:
+
+::
+
+    paster example create-example-vocabs -c <path to your ckan config file>
+
+This data can be removed with
+
+::
+
+    paster example clean -c <path to your ckan config file>
 
