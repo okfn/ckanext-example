@@ -1,5 +1,6 @@
 import os
 import logging
+from pylons import tmpl_context as c
 from ckan.authz import Authorizer
 from ckan.logic.converters import convert_to_extras,\
     convert_from_extras, convert_to_tags, convert_from_tags, free_tags_only
@@ -7,6 +8,7 @@ from ckan.logic import get_action, NotFound
 from ckan.logic.schema import package_form_schema, group_form_schema
 from ckan.lib.base import c, model
 from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer
+from ckan.plugins import IGenshiStreamFilter
 from ckan.plugins import implements, SingletonPlugin
 from ckan.lib.navl.validators import ignore_missing, keep_extras
 
@@ -121,6 +123,7 @@ class ExampleDatasetForm(SingletonPlugin):
     """
     implements(IDatasetForm, inherit=True)
     implements(IConfigurer, inherit=True)    
+    implements(IGenshiStreamFilter, inherit=True)
     
     def update_config(self, config):
         """
@@ -225,25 +228,33 @@ class ExampleDatasetForm(SingletonPlugin):
         """
         return
 
-    # def filter(self, stream):
-    #     # Add vocab tags to the bottom of the sidebar.
-    #     from pylons import request
-    #     from genshi.filters import Transformer
-    #     from genshi.input import HTML
-    #     routes = request.environ.get('pylons.routes_dict')
-    #     if routes.get('controller') == 'package' \
-    #         and routes.get('action') == 'read':
-    #             for vocab in (self.genre_vocab, self.composer_vocab):
-    #                 vocab_tags = [tag for tag in c.pkg_dict.get('tags', [])
-    #                         if tag.get('vocabulary_id') == vocab.id]
-    #                 if not vocab_tags:
-    #                     continue
-    #                 html = '<li class="sidebar-section">'
-    #                 html = html + '<h3>%s</h3>' % vocab.name
-    #                 html = html + '<ul class="tags clearfix">'
-    #                 for tag in vocab_tags:
-    #                     html = html + '<li>%s</li>' % tag.get('name')
-    #                 html = html + "</ul></li>"
-    #                 stream = stream | Transformer("//div[@id='sidebar']")\
-    #                     .append(HTML(html))
-    #     return stream
+    def filter(self, stream):
+        # Add vocab tags to the bottom of the sidebar.
+        from pylons import request
+        from genshi.filters import Transformer
+        from genshi.input import HTML
+        routes = request.environ.get('pylons.routes_dict')
+        context = {'model': model}
+        if routes.get('controller') == 'package' \
+            and routes.get('action') == 'read':
+                for vocab in (GENRE_VOCAB, COMPOSER_VOCAB):
+                    try:
+                        vocab = get_action('vocabulary_show')(context, {'id': vocab})
+                        vocab_tags = [t for t in c.pkg_dict.get('tags', [])
+                                      if t.get('vocabulary_id') == vocab['id']]
+                    except NotFound:
+                        vocab_tags = None
+
+                    if not vocab_tags:
+                        continue
+
+                    html = '<li class="sidebar-section">'
+                    html = html + '<h3>%s</h3>' % vocab['name']
+                    html = html + '<ul class="tags clearfix">'
+                    for tag in vocab_tags:
+                        html = html + '<li>%s</li>' % tag['name']
+                    html = html + "</ul></li>"
+                    stream = stream | Transformer(
+                        "//div[@id='sidebar']//ul[@class='widget-list']"
+                    ).append(HTML(html))
+        return stream
