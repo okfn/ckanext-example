@@ -7,6 +7,7 @@ from ckan.logic import get_action, NotFound
 from ckan.logic.schema import package_form_schema, group_form_schema
 from ckan.lib.base import c, model
 from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer
+from ckan.plugins import IGenshiStreamFilter
 from ckan.plugins import implements, SingletonPlugin
 from ckan.lib.navl.validators import ignore_missing, keep_extras
 
@@ -119,7 +120,8 @@ class ExampleDatasetForm(SingletonPlugin):
         class will be used.
     """
     implements(IDatasetForm, inherit=True)
-    implements(IConfigurer, inherit=True)
+    implements(IConfigurer, inherit=True)    
+    implements(IGenshiStreamFilter)
     
     def update_config(self, config):
         """
@@ -132,6 +134,40 @@ class ExampleDatasetForm(SingletonPlugin):
                                     'example', 'theme', 'templates')
         config['extra_template_paths'] = ','.join([template_dir,
                 config.get('extra_template_paths', '')])
+
+    # def configure(self, config):
+    #     '''
+    #     Adds some new vocabularies to the database if they don't already exist.
+
+    #     '''
+    #     # Add a 'genre' vocabulary with some tags.
+    #     self.genre_vocab = model.Vocabulary.get('Genre')
+    #     if not self.genre_vocab:
+    #         log.info("Adding vocab Genre")
+    #         self.genre_vocab = model.Vocabulary('Genre')
+    #         model.Session.add(self.genre_vocab)
+    #         model.Session.commit()
+    #         log.info("Adding example tags to vocab %s" % self.genre_vocab.name)
+    #         jazz_tag = model.Tag('jazz', self.genre_vocab.id)
+    #         soul_tag = model.Tag('soul', self.genre_vocab.id)
+    #         model.Session.add(jazz_tag)
+    #         model.Session.add(soul_tag)
+    #         model.Session.commit()
+
+    #     # Add a 'composer' vocabulary with some tags.
+    #     self.composer_vocab = model.Vocabulary.get('Composer')
+    #     if not self.composer_vocab:
+    #         log.info("Adding vocab Composer")
+    #         self.composer_vocab = model.Vocabulary('Composer')
+    #         model.Session.add(self.composer_vocab)
+    #         model.Session.commit()
+    #         log.info("Adding example tags to vocab %s" %
+    #                 self.composer_vocab.name)
+    #         mintzer_tag = model.Tag('Bob Mintzer', self.composer_vocab.id)
+    #         lewis_tag = model.Tag('Steve Lewis', self.composer_vocab.id)
+    #         model.Session.add(mintzer_tag)
+    #         model.Session.add(lewis_tag)
+    #         model.Session.commit()
 
     def package_form(self):
         """
@@ -174,6 +210,8 @@ class ExampleDatasetForm(SingletonPlugin):
         c.resource_columns = model.Resource.get_columns()
         try:
             c.vocab_tags = get_action('tag_list')(context, {'vocabulary_id': EXAMPLE_VOCAB})
+            # c.genre_tags = get_action('tag_list')(context, {'vocabulary_id': self.genre_vocab.name})
+            # c.composer_tags = get_action('tag_list')(context, {'vocabulary_id': self.composer_vocab.name})
         except NotFound:
             c.vocab_tags = None
 
@@ -192,6 +230,8 @@ class ExampleDatasetForm(SingletonPlugin):
         schema.update({
             'published_by': [ignore_missing, unicode, convert_to_extras],
             'vocab_tags': [ignore_missing, convert_to_tags(EXAMPLE_VOCAB)],
+            # 'genre_tags': [ignore_missing, convert_to_tags(self.genre_vocab.name)],
+            # 'composer_tags': [ignore_missing, convert_to_tags(self.composer_vocab.name)],
         })
         return schema
     
@@ -206,6 +246,10 @@ class ExampleDatasetForm(SingletonPlugin):
                 '__extras': [keep_extras, free_tags_only]
             },
             'vocab_tags_selected': [convert_from_tags(EXAMPLE_VOCAB), ignore_missing],
+            # 'genre_tags_selected': [convert_from_tags(self.genre_vocab.name),
+            #     ignore_missing],
+            # 'composer_tags_selected': [
+            #     convert_from_tags(self.composer_vocab.name), ignore_missing],
             'published_by': [convert_from_extras, ignore_missing],
         })
         return schema
@@ -216,3 +260,28 @@ class ExampleDatasetForm(SingletonPlugin):
         """
         return
 
+    def filter(self, stream):
+        return stream
+
+    # def filter(self, stream):
+    #     # Add vocab tags to the bottom of the sidebar.
+    #     from pylons import request
+    #     from genshi.filters import Transformer
+    #     from genshi.input import HTML
+    #     routes = request.environ.get('pylons.routes_dict')
+    #     if routes.get('controller') == 'package' \
+    #         and routes.get('action') == 'read':
+    #             for vocab in (self.genre_vocab, self.composer_vocab):
+    #                 vocab_tags = [tag for tag in c.pkg_dict.get('tags', [])
+    #                         if tag.get('vocabulary_id') == vocab.id]
+    #                 if not vocab_tags:
+    #                     continue
+    #                 html = '<li class="sidebar-section">'
+    #                 html = html + '<h3>%s</h3>' % vocab.name
+    #                 html = html + '<ul class="tags clearfix">'
+    #                 for tag in vocab_tags:
+    #                     html = html + '<li>%s</li>' % tag.get('name')
+    #                 html = html + "</ul></li>"
+    #                 stream = stream | Transformer("//div[@id='sidebar']")\
+    #                     .append(HTML(html))
+    #     return stream
