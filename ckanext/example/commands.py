@@ -36,6 +36,8 @@ class ExampleCommand(CkanCommand):
 
         if cmd == 'create-example-vocabs':
             self.create_example_vocabs()
+        if cmd == 'clean':
+            self.clean()
         else:
             log.error('Command "%s" not recognized' % (cmd,))
 
@@ -75,3 +77,6 @@ class ExampleCommand(CkanCommand):
             log.info("Adding tag %s to vocab %s" % ('Steve Lewis', forms.COMPOSER_VOCAB))
             data = {'name': 'Steve Lewis', 'vocabulary_id': vocab['id']}
             get_action('tag_create')(context, data)
+
+    def clean(self):
+        log.error("Clean command not yet implemented")
