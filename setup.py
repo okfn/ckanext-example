@@ -17,9 +17,7 @@ setup(
 	namespace_packages=['ckanext', 'ckanext.example'],
 	include_package_data=True,
 	zip_safe=False,
-	install_requires=[
-		# -*- Extra requirements: -*-
-	],
+	install_requires=[],
 	entry_points=\
 	"""
         [ckan.plugins]
@@ -29,5 +27,8 @@ setup(
 
         [ckan.forms]
         example_form = ckanext.example.package_form:get_example_fieldset
+
+        [paste.paster_command]
+        example=ckanext.example.commands:ExampleCommand
 	""",
 )

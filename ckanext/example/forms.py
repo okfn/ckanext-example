@@ -1,22 +1,26 @@
-import os, logging
+import os
+import logging
 from ckan.authz import Authorizer
 from ckan.logic.converters import convert_to_extras,\
     convert_from_extras, convert_to_tags, convert_from_tags, free_tags_only
-from ckan.logic import get_action
+from ckan.logic import get_action, NotFound
 from ckan.logic.schema import package_form_schema, group_form_schema
 from ckan.lib.base import c, model
-from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer, IConfigurable
+from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer
 from ckan.plugins import implements, SingletonPlugin
-from ckan.lib.navl.validators import ignore_missing, not_empty, keep_extras
+from ckan.lib.navl.validators import ignore_missing, keep_extras
 
 log = logging.getLogger(__name__)
+
+EXAMPLE_VOCAB = u'example_vocab'
+
 
 class ExampleGroupForm(SingletonPlugin):
     """This plugin demonstrates how a class packaged as a CKAN
     extension might extend CKAN behaviour by providing custom forms
     based on the type of a Group.
 
-    In this case, we implement two extension interfaces to provide custom 
+    In this case, we implement two extension interfaces to provide custom
     forms for specific types of group.
 
       - ``IConfigurer`` allows us to override configuration normally
@@ -29,7 +33,7 @@ class ExampleGroupForm(SingletonPlugin):
         class will be used. 
     """
     implements(IGroupForm, inherit=True)
-    implements(IConfigurer, inherit=True)    
+    implements(IConfigurer, inherit=True)
     
     def update_config(self, config):
         """
@@ -47,7 +51,7 @@ class ExampleGroupForm(SingletonPlugin):
         """
         Returns a string representing the location of the template to be
         rendered.  e.g. "forms/group_form.html".
-        """        
+        """
         return 'forms/group_form.html'
 
     def group_types(self):
@@ -110,13 +114,12 @@ class ExampleDatasetForm(SingletonPlugin):
         found in the ``ini``-file.  Here we use it to specify where the
         form templates can be found.
       - ``IDatasetForm`` allows us to provide a custom form for a dataset
-        based on the type_name that may be set for a package.  Where the 
-        type_name matches one of the values in package_types then this 
-        class will be used. 
+        based on the type_name that may be set for a package.  Where the
+        type_name matches one of the values in package_types then this
+        class will be used.
     """
     implements(IDatasetForm, inherit=True)
-    implements(IConfigurer, inherit=True)    
-    implements(IConfigurable)
+    implements(IConfigurer, inherit=True)
     
     def update_config(self, config):
         """
@@ -130,30 +133,11 @@ class ExampleDatasetForm(SingletonPlugin):
         config['extra_template_paths'] = ','.join([template_dir,
                 config.get('extra_template_paths', '')])
 
-    def configure(self, config):
-        """
-        Adds our new vocabulary to the database if it doesn't
-        already exist.
-        """
-        self.vocab_name = u'example_vocab'
-        v = model.Vocabulary.get(self.vocab_name)
-        if not v:
-            log.info("Adding vocab %s" % self.vocab_name)
-            vocab = model.Vocabulary(self.vocab_name)
-            model.Session.add(vocab)
-            model.Session.commit()
-            log.info("Adding example tags to vocab %s" % self.vocab_name)
-            vocab_tag_1 = model.Tag('vocab-tag-example-1', vocab.id)
-            vocab_tag_2 = model.Tag('vocab-tag-example-2', vocab.id)
-            model.Session.add(vocab_tag_1)
-            model.Session.add(vocab_tag_2)
-            model.Session.commit()
-
     def package_form(self):
         """
         Returns a string representing the location of the template to be
         rendered.  e.g. "package/new_package_form.html".
-        """        
+        """
         return 'forms/dataset_form.html'
 
     def is_fallback(self):
@@ -161,7 +145,7 @@ class ExampleDatasetForm(SingletonPlugin):
         Returns true iff this provides the fallback behaviour, when no other
         plugin instance matches a package's type.
 
-        As this is not the fallback controller we should return False.  If 
+        As this is not the fallback controller we should return False.  If
         we were wanting to act as the fallback, we'd return True
         """
         return True
@@ -183,12 +167,15 @@ class ExampleDatasetForm(SingletonPlugin):
         """
         Adds variables to c just prior to the template being rendered that can
         then be used within the form
-        """        
+        """
         c.licences = [('', '')] + model.Package.get_license_options()
         c.publishers = [('Example publisher', 'Example publisher 2')]
         c.is_sysadmin = Authorizer().is_sysadmin(c.user)
         c.resource_columns = model.Resource.get_columns()
-        c.vocab_tags = get_action('tag_list')(context, {'vocabulary_name': self.vocab_name})
+        try:
+            c.vocab_tags = get_action('tag_list')(context, {'vocabulary_id': EXAMPLE_VOCAB})
+        except NotFound:
+            c.vocab_tags = None
 
         ## This is messy as auths take domain object not data_dict
         pkg = context.get('package') or c.pkg
@@ -203,8 +190,8 @@ class ExampleDatasetForm(SingletonPlugin):
         """
         schema = package_form_schema()
         schema.update({
-            'published_by': [not_empty, unicode, convert_to_extras],
-            'vocab_tags': [ignore_missing, convert_to_tags(self.vocab_name)],
+            'published_by': [ignore_missing, unicode, convert_to_extras],
+            'vocab_tags': [ignore_missing, convert_to_tags(EXAMPLE_VOCAB)],
         })
         return schema
     
@@ -218,7 +205,7 @@ class ExampleDatasetForm(SingletonPlugin):
             'tags': {
                 '__extras': [keep_extras, free_tags_only]
             },
-            'vocab_tags_selected': [convert_from_tags(self.vocab_name), ignore_missing],
+            'vocab_tags_selected': [convert_from_tags(EXAMPLE_VOCAB), ignore_missing],
             'published_by': [convert_from_extras, ignore_missing],
         })
         return schema

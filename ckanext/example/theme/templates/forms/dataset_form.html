@@ -143,8 +143,8 @@
     <dd class="tags-instructions hints">e.g. pollution, rivers, water quality</dd>
     <dd class="tags-instructions field_error" py:if="errors.get('tag_string', '')">${errors.get('tag_string', '')}</dd>
   </dl>
-  <h3>Tags with Vocabulary</h3>
-  <dl>
+  <h3 py:if="c.vocab_tags">Tags With Example Vocabulary</h3>
+  <dl py:if="c.vocab_tags">
     <dt class="tags-label"><label class="field_opt" for="tags_vocab">Tags</label></dt>
     <dd class="tags-field">
       <select id="vocab_tags" class="chzn-select" name="vocab_tags" size="60" multiple="multiple">
