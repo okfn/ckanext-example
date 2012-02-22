@@ -249,7 +249,10 @@ class ExampleDatasetForm(SingletonPlugin):
                         continue
 
                     html = '<li class="sidebar-section">'
-                    html = html + '<h3>%s</h3>' % vocab['name']
+                    if vocab['name'] == GENRE_VOCAB:
+                        html = html + '<h3>Musical Genre</h3>'
+                    elif vocab['name'] == COMPOSER_VOCAB:
+                        html = html + '<h3>Composer</h3>'
                     html = html + '<ul class="tags clearfix">'
                     for tag in vocab_tags:
                         html = html + '<li>%s</li>' % tag['name']
