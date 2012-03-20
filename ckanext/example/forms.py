@@ -11,6 +11,7 @@ from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer
 from ckan.plugins import IGenshiStreamFilter
 from ckan.plugins import implements, SingletonPlugin
 from ckan.lib.navl.validators import ignore_missing, keep_extras
+import ckan.lib.plugins
 
 log = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ class ExampleGroupForm(SingletonPlugin):
         """                
                 
 
-class ExampleDatasetForm(SingletonPlugin):
+class ExampleDatasetForm(SingletonPlugin, ckan.lib.plugins.DefaultDatasetForm):
     """This plugin demonstrates how a theme packaged as a CKAN
     extension might extend CKAN behaviour.
 
