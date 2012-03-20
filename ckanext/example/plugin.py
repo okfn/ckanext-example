@@ -51,8 +51,7 @@ class ExamplePlugin(SingletonPlugin):
         our_public_dir = os.path.join(rootdir, 'ckanext',
                                       'example', 'theme', 'public')
         template_dir = os.path.join(rootdir, 'ckanext',
-                                    'example', 'theme',
-        'templates')
+                                    'example', 'theme', 'templates')
         # set our local template and resource overrides
         config['extra_public_paths'] = ','.join([our_public_dir,
                 config.get('extra_public_paths', '')])

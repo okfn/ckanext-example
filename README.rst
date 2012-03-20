@@ -38,7 +38,7 @@ Orientation
 
 * To understand the nuts and bolts of this file, which is a CKAN
   *Extension*, read in conjunction with the "Extension
-  documentation": http://docs.ckan.org/en/latest/plugins.html
+  documentation": http://docs.ckan.org/en/latest/extensions.html
 
 * One thing the extension does is set the values of
   ``extra_public_paths`` and ``extra_template_paths`` in the CKAN
@@ -60,7 +60,7 @@ Orientation
 * The custom package edit form at ``package_form.py`` follows a deprecated
   way to make a form (using FormAlchemy). This part of the Example Theme needs
   updating. In the meantime, follow the instructions at: 
-  http://readthedocs.org/docs/ckan/en/latest/forms.html
+  http://docs.ckan.org/en/latest/forms.html
 
 Example Tags With Vocabularies
 ==============================
