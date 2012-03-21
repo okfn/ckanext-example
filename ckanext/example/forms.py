@@ -1,6 +1,5 @@
 import os
 import logging
-from pylons import tmpl_context as c
 from ckan.authz import Authorizer
 from ckan.logic.converters import convert_to_extras,\
     convert_from_extras, convert_to_tags, convert_from_tags, free_tags_only
@@ -10,7 +9,7 @@ from ckan.lib.base import c, model
 from ckan.plugins import IDatasetForm, IGroupForm, IConfigurer
 from ckan.plugins import IGenshiStreamFilter
 from ckan.plugins import implements, SingletonPlugin
-from ckan.lib.navl.validators import ignore_missing, keep_extras
+from ckan.lib.navl.validators import ignore_missing, keep_extras, not_empty
 import ckan.lib.plugins
 
 log = logging.getLogger(__name__)
@@ -30,15 +29,15 @@ class ExampleGroupForm(SingletonPlugin):
       - ``IConfigurer`` allows us to override configuration normally
         found in the ``ini``-file.  Here we use it to specify where the
         form templates can be found.
-        
+
       - ``IGroupForm`` allows us to provide a custom form for a dataset
-        based on the 'type' that may be set for a group.  Where the 
-        'type' matches one of the values in group_types then this 
-        class will be used. 
+        based on the 'type' that may be set for a group.  Where the
+        'type' matches one of the values in group_types then this
+        class will be used.
     """
     implements(IGroupForm, inherit=True)
     implements(IConfigurer, inherit=True)
-    
+
     def update_config(self, config):
         """
         This IConfigurer implementation causes CKAN to look in the
@@ -50,7 +49,7 @@ class ExampleGroupForm(SingletonPlugin):
                                     'example', 'theme', 'templates')
         config['extra_template_paths'] = ','.join([template_dir,
                 config.get('extra_template_paths', '')])
-            
+
     def group_form(self):
         """
         Returns a string representing the location of the template to be
@@ -76,11 +75,11 @@ class ExampleGroupForm(SingletonPlugin):
         Returns true iff this provides the fallback behaviour, when no other
         plugin instance matches a group's type.
 
-        As this is not the fallback controller we should return False.  If 
+        As this is not the fallback controller we should return False.  If
         we were wanting to act as the fallback, we'd return True
         """
-        return False                
-                
+        return False
+
     def form_to_db_schema(self):
         """
         Returns the schema for mapping group data from a form to a format
@@ -94,7 +93,7 @@ class ExampleGroupForm(SingletonPlugin):
         format suitable for the form (optional)
         """
         return {}
-        
+
     def check_data_dict(self, data_dict):
         """
         Check if the return data is correct.
@@ -105,8 +104,8 @@ class ExampleGroupForm(SingletonPlugin):
     def setup_template_variables(self, context, data_dict):
         """
         Add variables to c just prior to the template being rendered.
-        """                
-                
+        """
+
 
 class ExampleDatasetForm(SingletonPlugin, ckan.lib.plugins.DefaultDatasetForm):
     """This plugin demonstrates how a theme packaged as a CKAN
@@ -123,9 +122,9 @@ class ExampleDatasetForm(SingletonPlugin, ckan.lib.plugins.DefaultDatasetForm):
         class will be used.
     """
     implements(IDatasetForm, inherit=True)
-    implements(IConfigurer, inherit=True)    
+    implements(IConfigurer, inherit=True)
     implements(IGenshiStreamFilter, inherit=True)
-    
+
     def update_config(self, config):
         """
         This IConfigurer implementation causes CKAN to look in the
@@ -202,7 +201,7 @@ class ExampleDatasetForm(SingletonPlugin, ckan.lib.plugins.DefaultDatasetForm):
             'composer_tags': [ignore_missing, convert_to_tags(COMPOSER_VOCAB)]
         })
         return schema
-    
+
     def db_to_form_schema(self):
         """
         Returns the schema for mapping package data from the database into a
@@ -220,6 +219,10 @@ class ExampleDatasetForm(SingletonPlugin, ckan.lib.plugins.DefaultDatasetForm):
                 convert_from_tags(COMPOSER_VOCAB), ignore_missing
             ],
             'published_by': [convert_from_extras, ignore_missing],
+        })
+        schema['groups'].update({
+            'name': [not_empty, unicode],
+            'title': [ignore_missing]
         })
         return schema
 
